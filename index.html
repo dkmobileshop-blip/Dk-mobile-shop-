@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DK Mobile Shop</title>
+<style>
+body{font-family:Arial,sans-serif;margin:0;background:#f2f5f9;color:#172033}
+header{background:#0757c9;color:white;padding:22px 16px;text-align:center}
+main{padding:16px;max-width:600px;margin:auto}
+input,button{box-sizing:border-box;width:100%;padding:13px;margin:6px 0;border-radius:9px;border:1px solid #ccd3df;font-size:16px}
+button{background:#0757c9;color:white;border:0;font-weight:bold}
+.card{background:white;padding:14px;margin:12px 0;border-radius:12px;box-shadow:0 2px 8px #0001}
+.price{color:#087443;font-weight:bold}
+</style>
+</head>
+<body>
+<header><h1>DK Mobile Shop</h1><p>Mobile Covers & Accessories</p></header>
+<main>
+<input id="search" placeholder="प्रोडक्ट खोजें..." oninput="showProducts()">
+<div id="products"></div>
+<h2>प्रोडक्ट जोड़ें (दुकानदार)</h2>
+<input id="name" placeholder="प्रोडक्ट का नाम">
+<input id="price" type="number" placeholder="कीमत ₹">
+<input id="category" placeholder="कैटेगरी, जैसे Samsung Cover">
+<button onclick="addProduct()">प्रोडक्ट जोड़ें</button>
+<p>DK Mobile Shop</p>
+</main>
+<script>
+let products=JSON.parse(localStorage.getItem('dkproducts')||'[]');
+function showProducts(){
+let q=document.getElementById('search').value.toLowerCase();
+document.getElementById('products').innerHTML=products.filter(p=>(p.name+' '+p.category).toLowerCase().includes(q)).map(p=>'<div class="card"><h3>'+safe(p.name)+'</h3><p>'+safe(p.category)+'</p><p class="price">₹'+safe(p.price)+'</p></div>').join('')||'<p>अभी कोई प्रोडक्ट नहीं है।</p>';
+}
+function safe(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function addProduct(){
+let name=document.getElementById('name').value.trim(),price=document.getElementById('price').value,category=document.getElementById('category').value.trim();
+if(!name||price===''||!category){alert('नाम, कीमत और कैटेगरी भरें।');return}
+products.push({name,price,category});localStorage.setItem('dkproducts',JSON.stringify(products));
+document.getElementById('name').value='';document.getElementById('price').value='';document.getElementById('category').value='';showProducts();
+}
+showProducts();
+</script>
+</body>
+</html>
